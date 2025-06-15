@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 class ProductServiceImplTest {
@@ -30,8 +31,18 @@ class ProductServiceImplTest {
     @Test
     void testGetAll() {
         List<Product> products = Arrays.asList(
-            new Product("A", "Cat", BigDecimal.TEN, 1),
-            new Product("B", "Cat", BigDecimal.ONE, 2)
+            Product.builder()
+                .name("A")
+                .category("Cat")
+                .price(BigDecimal.TEN)
+                .stock(1)
+                .build(),
+            Product.builder()
+                .name("B")
+                .category("Cat")
+                .price(BigDecimal.ONE)
+                .stock(2)
+                .build()
         );
         when(repository.findAll()).thenReturn(products);
 
@@ -43,7 +54,12 @@ class ProductServiceImplTest {
 
     @Test
     void testGetById_Success() {
-        Product product = new Product("A", "Cat", BigDecimal.TEN, 1);
+        Product product = Product.builder()
+                .name("A")
+                .category("Cat")
+                .price(BigDecimal.TEN)
+                .stock(1)
+                .build();
         when(repository.findById(1L)).thenReturn(Optional.of(product));
 
         ProductResponseDTO result = service.getById(1L);
@@ -62,7 +78,12 @@ class ProductServiceImplTest {
     @Test
     void testCreate() {
         ProductRequestDTO dto = new ProductRequestDTO("A", "Cat", BigDecimal.TEN, 1);
-        Product saved = new Product("A", "Cat", BigDecimal.TEN, 1);
+        Product saved = Product.builder()
+                .name("A")
+                .category("Cat")
+                .price(BigDecimal.TEN)
+                .stock(1)
+                .build();
 
         when(repository.save(any(Product.class))).thenReturn(saved);
 
@@ -74,7 +95,12 @@ class ProductServiceImplTest {
 
     @Test
     void testUpdate_Success() {
-        Product existing = new Product("Old", "OldCat", BigDecimal.ONE, 1);
+        Product existing = Product.builder()
+                .name("A")
+                .category("Cat")
+                .price(BigDecimal.TEN)
+                .stock(1)
+                .build();
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
         when(repository.save(any(Product.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
